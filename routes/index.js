@@ -9,6 +9,7 @@ const router = express.Router();
 const AppController = require('../controllers/AppController');
 const UserController = require('../controllers/UserController');
 const AuthController = require('../controllers/AuthController');
+const FilesController = require('../controllers/FilesController');
 
 /**
  * GET /status
@@ -67,5 +68,7 @@ router.get('/disconnect', AuthController.getDisconnect);
  * @param {callback} middleware - Express middleware
  */
 router.get('/users/me', AuthController.getMe);
+
+router.post('/files', FilesController.postUpload);
 
 module.exports = router;
