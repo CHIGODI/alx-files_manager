@@ -45,6 +45,36 @@ class UserController {
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
+
+  /**
+ * Retrieves the authenticated user's information.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} req.headers - The headers of the request.
+ * @param {string} req.headers.authorization - The authorization header containing the Bearer token.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves to sending
+ *                          the user's information or an error message.
+ *
+ * @throws {Error} - If there is an internal server error.
+ */
+  static async getMe(req, res) {
+    try {
+      const authHeader = req.hearders.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).send({ error: 'Unauthorized' });
+      }
+      const token = authHeader.split(' ')[1];
+      const user = await dbClient.getUserByToken(token);
+      if (!user) {
+        return res.status(401).send({ error: 'Unauthorized' });
+      }
+      return res.status(200).json({ id: user._id, email: user.email });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ error: 'Internal server error' });
+    }
+  }
 }
 
 module.exports = UserController;
