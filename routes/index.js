@@ -69,6 +69,13 @@ router.get('/disconnect', AuthController.getDisconnect);
  */
 router.get('/users/me', AuthController.getMe);
 
+/**
+ * @summary:Upload a file
+ * @description: Upload a new file
+ * @route: POST /upload
+ */
 router.post('/files', FilesController.postUpload);
+
+router.get('/files/:id/data', FilesController.getFile);
 
 module.exports = router;
