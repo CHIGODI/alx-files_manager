@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const AppController = require('../controllers/AppController');
+const UserController = require('../controllers/UserController');
 
 /**
  * GET /status
@@ -19,5 +20,13 @@ router.get('/status', AppController.getStatus);
  * @description Retrieves the count of users and files
  */
 router.get('/stats', AppController.getStats);
+
+/**
+ * POST /user
+ * @route Post /users
+ * @description Retrieve new users
+ */
+
+router.post('/users', UserController.postNew);
 
 module.exports = router;
