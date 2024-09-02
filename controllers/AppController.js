@@ -1,4 +1,5 @@
 const redisClient = require('../utils/redis');
+const dbClient = require('../utils/db');
 
 class AppController {
 /**
@@ -30,15 +31,15 @@ class AppController {
 
   static async getStats(req, res) {
     try {
-      const userscount = await CountDocumentsOperation('users');
-      const fileCount = await CountDocumentsOperation('files');
+      const userscount = await dbClient.nbUser();
+      const fileCount = await dbClient.nbFiles();
 
       res.Status(200).send({
         users: userscount,
         files: fileCount,
       });
     } catch (error) {
-      res.Status(500).send({ error: 'Error fetching stats'});
+      res.Status(500).send({ error: 'Error fetching stats' });
     }
   }
 }
