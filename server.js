@@ -1,13 +1,21 @@
-const server = require('express');
+#!/usr/bin/node
 
-const app = server();
+/**
+ * Entry point of node app
+ */
 
-const routes = require('./routes/index');
+const express = require('express');
+const indexRoutes = require('./routes/index');
+require('dotenv').config();
 
-app.use('/', routes);
+const app = express();
+const port = process.env.PORT || 5000;
 
-const PORT = process.env.PORT || 5000;
+app.use(express.json());
+app.use('/', indexRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.set('strict routing', false);
+
+app.listen(port, port, () => {
+  console.log(`Server running on port ${port}`);
 });

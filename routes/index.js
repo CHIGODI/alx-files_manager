@@ -4,29 +4,26 @@
  * @requires express
  */
 const express = require('express');
+#!/usr/bin/node
 
+const express = require('express');
 const router = express.Router();
 const AppController = require('../controllers/AppController');
 const UserController = require('../controllers/UserController');
 const AuthController = require('../controllers/AuthController');
 const FilesController = require('../controllers/FilesController');
+const  AppController = require('../controllers/AppController');
+const UsersController = require('../controllers/UsersController')
+const AuthController = require('../controllers/AuthController')
+const FilesController = require('../controllers/FilesController')
 
-/**
- * GET /status
- *
- * @route GET /status
- * @summary Get the stats of the API
- * @description Retrieves the count of users and files
- */
 router.get('/status', AppController.getStatus);
-
-/**
- * GET /stats
- * @route GET /stats
- * @summary Get the stats of the API
- * @description Retrieves the count of users and files
- */
 router.get('/stats', AppController.getStats);
+router.post('/users', UsersController.postNew);
+router.get('/connect', AuthController.getConnect);
+router.get('/disconnect', AuthController.getDisconnect);
+router.get('/users/me', UsersController.getMe);
+router.post('/files', FilesController.postUpload);
 
 /**
  * POST /user
