@@ -26,7 +26,7 @@ class AppController {
         files: filesCount,
       });
     } catch (error) {
-      console.log(`getStats error -> ${error}`)
+      console.log(`getStats error -> ${error}`);
       res.status(500).send({ error: 'Error fetching stats' });
     }
   }
