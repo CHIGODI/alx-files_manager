@@ -18,8 +18,6 @@ class DBClient {
   }
 
   async nbUsers() {
-    if (!this.isAlive()) return 0;
-
     try {
       const count = await this.client.db.collection('users').countDocuments();
       return count;
@@ -30,8 +28,6 @@ class DBClient {
   }
 
   async nbFiles() {
-    if (!this.isAlive()) return 0;
-
     try {
       const count = await this.client.db.collection('files').countDocuments();
       return count;
