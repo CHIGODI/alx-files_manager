@@ -1,8 +1,3 @@
-#!/usr/bin/node
-/**
- * DBClient class - connecting to MongoDB
- */
-
 const mongoose = require('mongoose');
 
 // load environment variables
