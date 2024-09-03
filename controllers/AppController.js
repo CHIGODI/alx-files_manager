@@ -27,6 +27,7 @@ class AppController {
       });
     } catch (error) {
       res.status(500).send('Error fetching stats');
+
     }
   }
 }
