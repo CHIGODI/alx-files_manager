@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
 
 class UsersController {
   static generateSHA1Hash(input) {
@@ -35,6 +36,25 @@ class UsersController {
       id: insertedId,
       email: reqData.email,
     });
+  }
+
+  static async getMe(req, res) {
+    try {
+      const authToken = req.headers['x-token'];
+      if (!authToken) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const user = await redisClient.get(authToken);
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      return res.status(200).json(user);
+    } catch (error) {
+      console.error('Error in getMe:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 }
 
