@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-
-// load environment variables
 require('dotenv').config();
 
 class DBClient {
@@ -12,6 +10,7 @@ class DBClient {
 
     mongoose.connect(uri);
     this.client = mongoose.connection;
+    this.client.on('error', console.error.bind(console, 'MongoDB connection error:'));
   }
 
   isAlive() {
@@ -20,12 +19,26 @@ class DBClient {
 
   async nbUsers() {
     if (!this.isAlive()) return 0;
-    return await this.client.db.collection('users').countDocuments();
+
+    try {
+      const count = await this.client.db.collection('users').countDocuments();
+      return count;
+    } catch (err) {
+      console.error(`nbUsers Error -> ${err}`);
+      return 0;
+    }
   }
 
   async nbFiles() {
     if (!this.isAlive()) return 0;
-    return await this.client.db.collection('files').countDocuments();
+
+    try {
+      const count = await this.client.db.collection('files').countDocuments();
+      return count;
+    } catch (err) {
+      console.error(`bnFiles Error -> ${err}`);
+      return 0;
+    }
   }
 }
 
