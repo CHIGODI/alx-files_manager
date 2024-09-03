@@ -27,7 +27,7 @@ fileQueue.process(async (job) => {
   ];
 
   const thumbnails = await Promise.all(
-    options.map((option) => imageThumbnail(fileDocument.localPath, option))
+    options.map((option) => imageThumbnail(fileDocument.localPath, option)),
   );
 
   thumbnails.forEach((thumbnail, index) => {
