@@ -13,16 +13,19 @@ const fileQueue = new Bull('fileQueue');
  * FileController class handles file-related operations.
  */
 class FileController {
- /**
+  /**
    * Creates a new file in the database and starts background processing
    * for generating thumbnails if the file type is 'image'.
    *
    * @param {object} req - The request object, containing file data and user info.
-   * @param {object} res - The response object, used to send back the appropriate HTTP status and data.
+   * @param {object} res - The response object, used to send back the appropriate
+   *  HTTP status and data.
    * @returns {object} The newly created file document, or an error message if something goes wrong.
    */
   static async postUpload(req, res) {
-    const { name, type, parentId = 0, isPublic = false, data } = req.body;
+    const {
+      name, type, parentId = 0, isPublic = false, data,
+    } = req.body;
     const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
 
     if (!userId) {
