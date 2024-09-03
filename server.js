@@ -5,14 +5,14 @@
  */
 
 const express = require('express');
-const indexRoutes = require('./routes/index');
+const router = require('./routes/index');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
-app.use('/', indexRoutes);
+app.use('/', router);
 
 app.set('strict routing', false);
 
