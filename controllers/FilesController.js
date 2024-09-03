@@ -188,6 +188,84 @@ class FileController {
     return res.status(200).json(files);
   }
 
+  /**
+   * Publishes a file by setting `isPublic` to true based on the provided ID.
+   *
+   * @param {object} req - The request object, containing parameters and headers.
+   * @param {object} res - The response object, used to send back the appropriate
+   *  HTTP status and data.
+   * @returns {object} The updated file document, or an error message if not found or unauthorized.
+   */
+  static async putPublish(req, res) {
+    const { id } = req.params;
+    const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
+
+    // If user is not authenticated, return an error
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Find the file document by ID and userId
+    const fileDocument = await dbClient.db.collection('files').findOne({
+      _id: ObjectId(id),
+      userId: ObjectId(userId),
+    });
+
+    // If the file document is not found, return an error
+    if (!fileDocument) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    // Update the value of isPublic to true
+    await dbClient.db.collection('files').updateOne(
+      { _id: ObjectId(id) },
+      { $set: { isPublic: true } },
+    );
+
+    // Return the updated file document
+    fileDocument.isPublic = true;
+    return res.status(200).json(fileDocument);
+  }
+
+  /**
+   * Unpublishes a file by setting `isPublic` to false based on the provided ID.
+   *
+   * @param {object} req - The request object, containing parameters and headers.
+   * @param {object} res - The response object, used to send back the appropriate
+   *  HTTP status and data.
+   * @returns {object} The updated file document, or an error message if not found or unauthorized.
+   */
+  static async putUnpublish(req, res) {
+    const { id } = req.params;
+    const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
+
+    // If user is not authenticated, return an error
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Find the file document by ID and userId
+    const fileDocument = await dbClient.db.collection('files').findOne({
+      _id: ObjectId(id),
+      userId: ObjectId(userId),
+    });
+
+    // If the file document is not found, return an error
+    if (!fileDocument) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    // Update the value of isPublic to false
+    await dbClient.db.collection('files').updateOne(
+      { _id: ObjectId(id) },
+      { $set: { isPublic: false } },
+    );
+
+    // Return the updated file document
+    fileDocument.isPublic = false;
+    return res.status(200).json(fileDocument);
+  }
+
   static async getFile(req, res) {
     const { id } = req.params;
     const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
