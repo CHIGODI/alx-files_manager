@@ -121,6 +121,73 @@ class FileController {
     });
   }
 
+  /**
+ * Retrieves a file document based on the provided ID.
+ *
+ * @param {object} req - The request object, containing parameters and headers.
+ * @param {object} res - The response object, used to send back the appropriate
+ * HTTP status and data.
+ * @returns {object} The file document if found, or an error message if not found or unauthorized.
+ */
+  static async getShow(req, res) {
+    const { id } = req.params;
+    const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
+
+    // If user is not authenticated, return an error
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Find the file document by ID and userId
+    const fileDocument = await dbClient.db.collection('files').findOne({
+      _id: ObjectId(id),
+      userId: ObjectId(userId),
+    });
+
+    // If the file document is not found, return an error
+    if (!fileDocument) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    // Return the file document
+    return res.status(200).json(fileDocument);
+  }
+
+  /**
+ * Retrieves a list of file documents for the authenticated user,
+ * based on the provided parentId and page for pagination.
+ *
+ * @param {object} req - The request object, containing query parameters and headers.
+ * @param {object} res - The response object, used to send back the appropriate
+ *  HTTP status and data.
+ * @returns {array} An array of file documents, or an error message if unauthorized.
+ */
+  static async getIndex(req, res) {
+    const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
+
+    // If user is not authenticated, return an error
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Get query parameters for parentId and page
+    const { parentId = 0, page = 0 } = req.query;
+    const pageSize = 20;
+
+    // Find file documents for the authenticated user
+    const files = await dbClient.db.collection('files')
+      .find({
+        userId: ObjectId(userId),
+        parentId: parentId === '0' ? 0 : ObjectId(parentId),
+      })
+      .skip(page * pageSize)
+      .limit(pageSize)
+      .toArray();
+
+    // Return the list of file documents
+    return res.status(200).json(files);
+  }
+
   static async getFile(req, res) {
     const { id } = req.params;
     const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
