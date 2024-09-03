@@ -76,6 +76,10 @@ router.get('/users/me', AuthController.getMe);
  */
 router.post('/files', FilesController.postUpload);
 
+/**
+ * ### GET /files/:id/data
+ * Retrieves a file by ID.
+ */
 router.get('/files/:id/data', FilesController.getFile);
 
 module.exports = router;
