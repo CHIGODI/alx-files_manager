@@ -20,12 +20,12 @@ class DBClient {
 
   async nbUsers() {
     if (!this.isAlive()) return 0;
-    return this.client.db.collection('users').countDocuments();
+    return await this.client.db.collection('users').countDocuments();
   }
 
   async nbFiles() {
     if (!this.isAlive()) return 0;
-    return this.client.db.collection('files').countDocuments();
+    return await this.client.db.collection('files').countDocuments();
   }
 }
 
