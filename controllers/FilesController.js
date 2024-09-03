@@ -232,45 +232,36 @@ class FileController {
 
   static async getFile(req, res) {
     const { id } = req.params;
+    const { size } = req.query;
     const userId = await redisClient.get(`auth_${req.headers['x-token']}`);
 
-    // Find the file document by ID
-    const fileDocument = await dbClient.db.collection('files').findOne({ _id: ObjectId(id) });
+    const fileDocument = await dbClient.db.collection('files').findOne({
+      _id: ObjectId(id),
+      $or: [
+        { userId: ObjectId(userId) },
+        { isPublic: true },
+      ],
+    });
 
     if (!fileDocument) {
       return res.status(404).json({ error: 'Not found' });
     }
 
-    // Check if the file is public or if the user is authenticated and is the owner
-    if (!fileDocument.isPublic && (!userId || fileDocument.userId.toString() !== userId)) {
-      return res.status(404).json({ error: 'Not found' });
-    }
-
-    // Check if the file type is folder
     if (fileDocument.type === 'folder') {
       return res.status(400).json({ error: "A folder doesn't have content" });
     }
 
-    // Check if the file exists on disk
-    if (!fs.existsSync(fileDocument.localPath)) {
+    let filePath = fileDocument.localPath;
+    if (size && [500, 250, 100].includes(parseInt(size, 10))) {
+      filePath = `${filePath}_${size}`;
+    }
+    if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'Not found' });
     }
 
-    // Get the MIME type of the file based on its name
     const mimeType = mime.lookup(fileDocument.name);
-
-    // Read and return the file content
-    fs.readFile(fileDocument.localPath, (err, data) => {
-      if (err) {
-        return res.status(500).json({ error: 'Unable to read file' });
-      }
-
-      res.setHeader('Content-Type', mimeType);
-      return res.send(data);
-    });
-
-    // Ensure a return statement at the end
-    return null;
+    res.setHeader('Content-Type', mimeType);
+    return res.status(200).sendFile(filePath);
   }
 }
 
