@@ -76,6 +76,12 @@ router.get('/users/me', AuthController.getMe);
  */
 router.post('/files', FilesController.postUpload);
 
+// Route to get a file document by ID
+router.get('/files/:id', FilesController.getShow);
+
+// Route to get all file documents with pagination
+router.get('/files', FilesController.getIndex);
+
 /**
  * ### GET /files/:id/data
  * Retrieves a file by ID.
