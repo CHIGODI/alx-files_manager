@@ -1,57 +1,55 @@
-const mongoose = require('mongoose');
+import { MongoClient } from 'mongodb';
 
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 27017;
 const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
-const url = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
+const url = `mongodb://${DB_HOST}:${DB_PORT}`;
 
 /**
- * Class for performing operations with Mongo service using Mongoose
+ * Class for performing operations with Mongo service
  */
 class DBClient {
   constructor() {
-    this.connect();
-  }
-
-  async connect() {
-    try {
-      await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
-      console.log('Connected successfully to MongoDB server');
-      this.db = mongoose.connection;
-    } catch (err) {
-      console.error('Failed to connect to MongoDB', err);
-      this.db = null;
-    }
+    MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
+      if (!err) {
+        // console.log('Connected successfully to server');
+        this.db = client.db(DB_DATABASE);
+        this.usersCollection = this.db.collection('users');
+        this.filesCollection = this.db.collection('files');
+      } else {
+        console.log(err.message);
+        this.db = false;
+      }
+    });
   }
 
   /**
-   * Checks if connection to MongoDB is alive
+   * Checks if connection to Redis is Alive
    * @return {boolean} true if connection alive or false if not
    */
   isAlive() {
-    return this.db && this.db.readyState === 1;
+    return Boolean(this.db);
   }
 
   /**
    * Returns the number of documents in the collection users
-   * @return {Promise<number>} amount of users
+   * @return {number} amount of users
    */
   async nbUsers() {
-    if (!this.isAlive()) return 0;
-    const User = mongoose.model('User', new mongoose.Schema({}), 'users');
-    return User.countDocuments();
+    const numberOfUsers = this.usersCollection.countDocuments();
+    return numberOfUsers;
   }
 
   /**
    * Returns the number of documents in the collection files
-   * @return {Promise<number>} amount of files
+   * @return {number} amount of files
    */
   async nbFiles() {
-    if (!this.isAlive()) return 0;
-    const File = mongoose.model('File', new mongoose.Schema({}), 'files');
-    return File.countDocuments();
+    const numberOfFiles = this.filesCollection.countDocuments();
+    return numberOfFiles;
   }
 }
 
 const dbClient = new DBClient();
-module.exports = dbClient;
+
+export default dbClient;
