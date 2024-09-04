@@ -1,6 +1,6 @@
-const crypto = require('crypto');
-const dbClient = require('../utils/db');
-const redisClient = require('../utils/redis');
+import crypto from 'crypto';
+import redisClient from '../utils/redis.js';
+import dbClient from '../utils/db.js';
 
 class UsersController {
   static generateSHA1Hash(input) {
@@ -58,4 +58,4 @@ class UsersController {
   }
 }
 
-module.exports = UsersController;
+export default UsersController;

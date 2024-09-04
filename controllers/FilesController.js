@@ -1,13 +1,12 @@
-const { v4: uuidv4 } = require('uuid');
-const mime = require('mime-types');
-const Bull = require('bull');
-const { ObjectId } = require('mongodb');
-const fs = require('fs-extra');
-const path = require('path');
-const dbClient = require('../utils/db');
-const redisClient = require('../utils/redis');
-
-const fileQueue = new Bull('fileQueue');
+import { v4 as uuidv4 } from 'uuid';
+import mime from 'mime-types';
+import Bull from 'bull';
+import ObjectId from'mongodb';
+import fs from 'fs-extra';
+import path from 'path';
+import redisClient from '../utils/redis.js';
+import dbClient from '../utils/db.js';
+// import fileQueue from 'fileQueue';
 
 /**
  * FileController class handles file-related operations.
@@ -265,4 +264,4 @@ class FileController {
   }
 }
 
-module.exports = FileController;
+export default FileController;

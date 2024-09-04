@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const dbClient = require('../utils/db');
+import dbClient from '../utils/db.js';
 
 /**
  * UserController class to handle user-related operations.
@@ -77,4 +77,4 @@ class UserController {
   }
 }
 
-module.exports = UserController;
+export default UserController;
