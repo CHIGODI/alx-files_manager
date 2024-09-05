@@ -1,15 +1,12 @@
 import express from 'express';
-import router from './routes/index.js'
-import dotenv from 'dotenv';
+import startServer from './libs/boot';
+import injectRoutes from './routes';
+import injectMiddlewares from './libs/middlewares';
 
-dotenv.config()
+const server = express();
 
-const app = express();
-const port = process.env.PORT || 5000;
+injectMiddlewares(server);
+injectRoutes(server);
+startServer(server);
 
-app.use(express.json());
-app.use('/', router);
-
-app.listen(port, port, () => {
-  console.log(`Server running on port ${port}`);
-});
+export default server;
