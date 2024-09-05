@@ -10,17 +10,11 @@ class AppController {
   static getStatus(request, response) {
     const status = {
       redis: redisClient.isAlive(),
-  /**
-   * should return the number of users and files in DB:
-   * { "users": 12, "files": 1231 }
-   *  with a status code 200
-   */
-  static async getStats(request, response) {
-    const stats = {
-      users: await dbClient.nbUsers(),
-      files: await dbClient.nbFiles(),
+      db: dbClient.isAlive(),
     };
-    response.status(200).send(stats);
+    response.status(200).send(status);
+  }
+
   /**
    * should return the number of users and files in DB:
    * { "users": 12, "files": 1231 }
