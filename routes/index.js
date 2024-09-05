@@ -1,8 +1,8 @@
 import express from 'express';
 import AppController from '../controllers/AppController.js';
-import UsersController from '../controllers/UsersController';
-import AuthController from '../controllers/AuthController';
-import FilesController from '../controllers/FilesController';
+import UsersController from '../controllers/UsersController.js.js';
+import AuthController from '../controllers/AuthController.js';
+import FilesController from '../controllers/FilesController.js';
 
 function controllerRouting(app) {
   const router = express.Router();
